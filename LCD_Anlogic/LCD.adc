@@ -1,0 +1,31 @@
+set_pin_assignment { clk_24MHz_i } { LOCATION = K14; }
+set_pin_assignment { rst_n_i } { LOCATION = K16; }
+
+set_pin_assignment { LCD_R_o[0] } { LOCATION = B2; }
+set_pin_assignment { LCD_R_o[1] } { LOCATION = A2; }
+set_pin_assignment { LCD_R_o[2] } { LOCATION = C3; }
+set_pin_assignment { LCD_R_o[3] } { LOCATION = C2; }
+set_pin_assignment { LCD_R_o[4] } { LOCATION = C1; }
+set_pin_assignment { LCD_R_o[5] } { LOCATION = E2; }
+set_pin_assignment { LCD_R_o[6] } { LOCATION = D1; }
+set_pin_assignment { LCD_R_o[7] } { LOCATION = E1; }
+set_pin_assignment { LCD_G_o[0] } { LOCATION = E3; }
+set_pin_assignment { LCD_G_o[1] } { LOCATION = E4; }
+set_pin_assignment { LCD_G_o[2] } { LOCATION = F1; }
+set_pin_assignment { LCD_G_o[3] } { LOCATION = F2; }
+set_pin_assignment { LCD_G_o[4] } { LOCATION = G1; }
+set_pin_assignment { LCD_G_o[5] } { LOCATION = G3; }
+set_pin_assignment { LCD_G_o[6] } { LOCATION = J4; }
+set_pin_assignment { LCD_G_o[7] } { LOCATION = J3; }
+set_pin_assignment { LCD_B_o[0] } { LOCATION = J1; }
+set_pin_assignment { LCD_B_o[1] } { LOCATION = K1; }
+set_pin_assignment { LCD_B_o[2] } { LOCATION = K2; }
+set_pin_assignment { LCD_B_o[3] } { LOCATION = K3; }
+set_pin_assignment { LCD_B_o[4] } { LOCATION = L3; }
+set_pin_assignment { LCD_B_o[5] } { LOCATION = M2; }
+set_pin_assignment { LCD_B_o[6] } { LOCATION = M1; }
+set_pin_assignment { LCD_B_o[7] } { LOCATION = N1; }
+
+set_pin_assignment { LCD_PCLK_p_o } { LOCATION = L1};
+set_pin_assignment { LCD_Data_Valid_p_o } { LOCATION = L4; }
+set_pin_assignment { LCD_PWM_o } { LOCATION = J16; }
