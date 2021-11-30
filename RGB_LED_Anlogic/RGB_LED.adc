@@ -1,0 +1,5 @@
+set_pin_assignment	{ clk_24MHz_i }	{ LOCATION = K14; }
+set_pin_assignment	{ rst_n_i }	{ LOCATION = K16; }
+set_pin_assignment	{ LED_R_n_o }	{ LOCATION = R3; }
+set_pin_assignment	{ LED_G_n_o }	{ LOCATION = P13; }
+set_pin_assignment	{ LED_B_n_o }	{ LOCATION = J14; }

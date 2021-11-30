@@ -130,27 +130,12 @@ localparam V_Border        =    0 ;
 
 /****************************************************************/
 
-output [ bpp - 1:00 ] LCD_R_o            ;
-output [ bpp - 1:00 ] LCD_G_o            ;
-output [ bpp - 1:00 ] LCD_B_o            ;
-output                LCD_Data_Valid_p_o ;
-output                LCD_PCLK_p_o       ;
-
-wire   [ bpp - 1:00 ] LCD_R_o            ;
-wire   [ bpp - 1:00 ] LCD_G_o            ;
-wire   [ bpp - 1:00 ] LCD_B_o            ;
-wire                  LCD_Data_Valid_p_o ;
-wire                  LCD_PCLK_p_o       ;
-
-/****************************************************************/
-
 reg    [ $clog2(H_Total) : 0 ] H_Scanning_Counter   ;
 wire   [ $clog2(H_Total) : 0 ] H_Scanning_Counter_i ;
 wire   [ $clog2(H_Total) : 0 ] H_Scanning_Counter_o ;
 
 /****/
 
-assign H_Scanning_Counter_o = H_Scanning_Counter ;
 assign H_Scanning_Counter_i = ( ( H_Scanning_Counter_o == ( H_Total - 1'b1 ) ) ? ( 'b0 ) : ( H_Scanning_Counter_o + 1'b1 ) ) ;
 
 /****/
@@ -164,6 +149,8 @@ always @ ( posedge clk_33MHz_i or negedge rst_n_i ) begin
 	end
 end
 
+assign H_Scanning_Counter_o = H_Scanning_Counter ;
+
 /****************************************************************/
 
 reg    [ $clog2(V_Total) : 0 ] V_Scanning_Counter   ;
@@ -172,9 +159,8 @@ wire   [ $clog2(V_Total) : 0 ] V_Scanning_Counter_o ;
 
 /****/
 
-assign V_Scanning_Counter_o = V_Scanning_Counter ;
 assign V_Scanning_Counter_i =
-	( 
+	(
 		( ( V_Scanning_Counter_o == ( V_Total - 1'b1 ) ) & ( H_Scanning_Counter_o == ( H_Total - 1'b1 ) ) )
 			?
 				( 'b0 )
@@ -193,11 +179,50 @@ always @ ( posedge clk_33MHz_i or negedge rst_n_i ) begin
 	end
 end
 
+assign V_Scanning_Counter_o = V_Scanning_Counter ;
+
 /****************************************************************/
 
-wire   [ bpp - 1:00 ] LCD_R_i          ;
-wire   [ bpp - 1:00 ] LCD_G_i          ;
-wire   [ bpp - 1:00 ] LCD_B_i          ;
+reg                   LCD_Data_Valid     ;
+wire                  LCD_Data_Valid_i   ;
+
+/****/
+
+assign LCD_Data_Valid_i = ( (
+                            ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Total                      - 1'b1 ) ) )
+                            &
+                            ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Total                      - 1'b1 ) ) )
+                            )                                                                                                                          ? (  1'b1           ) : (    1'b0           ) ) ;
+
+/****/
+
+always @ ( posedge clk_33MHz_i or negedge rst_n_i ) begin
+	if ( ! rst_n_i ) begin
+		LCD_Data_Valid <= 'b0 ;
+	end
+	else begin
+		LCD_Data_Valid <= LCD_Data_Valid_i ;
+	end
+end
+
+/****/
+
+output                LCD_Data_Valid_p_o ;
+
+wire                  LCD_Data_Valid_p_o ;
+
+assign LCD_Data_Valid_p_o = LCD_Data_Valid ;
+
+/****************************************************************/
+
+reg    [ bpp - 1:00 ] LCD_R              ;
+reg    [ bpp - 1:00 ] LCD_G              ;
+reg    [ bpp - 1:00 ] LCD_B              ;
+wire   [ bpp - 1:00 ] LCD_R_i            ;
+wire   [ bpp - 1:00 ] LCD_G_i            ;
+wire   [ bpp - 1:00 ] LCD_B_i            ;
+
+/****/
 
 assign LCD_R_i          = ( (
                               (
@@ -295,42 +320,40 @@ assign LCD_B_i          = ( (
 
 /****/
 
-wire                  LCD_Data_Valid_i ;
-
-assign LCD_Data_Valid_i = ( (
-                            ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Total                      - 1'b1 ) ) )
-                            &
-                            ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Total                      - 1'b1 ) ) )
-                            )                                                                                                                          ? (  1'b1           ) : (    1'b0           ) ) ;
-
-/****/
-
-reg    [ bpp - 1:00 ] LCD_R          ;
-reg    [ bpp - 1:00 ] LCD_G          ;
-reg    [ bpp - 1:00 ] LCD_B          ;
-reg                   LCD_Data_Valid ;
-
 always @ ( posedge clk_33MHz_i or negedge rst_n_i ) begin
 	if ( ! rst_n_i ) begin
 		LCD_R          <= 'b0 ;
 		LCD_G          <= 'b0 ;
 		LCD_B          <= 'b0 ;
-		LCD_Data_Valid <= 'b0 ;
 	end
 	else begin
 		LCD_R          <= LCD_R_i          ;
 		LCD_G          <= LCD_G_i          ;
 		LCD_B          <= LCD_B_i          ;
-		LCD_Data_Valid <= LCD_Data_Valid_i ;
 	end
 end
+
+/****/
+
+output [ bpp - 1:00 ] LCD_R_o            ;
+output [ bpp - 1:00 ] LCD_G_o            ;
+output [ bpp - 1:00 ] LCD_B_o            ;
+
+wire   [ bpp - 1:00 ] LCD_R_o            ;
+wire   [ bpp - 1:00 ] LCD_G_o            ;
+wire   [ bpp - 1:00 ] LCD_B_o            ;
 
 assign LCD_R_o            = LCD_R          ;
 assign LCD_G_o            = LCD_G          ;
 assign LCD_B_o            = LCD_B          ;
-assign LCD_Data_Valid_p_o = LCD_Data_Valid ;
 
 /****************************************************************/
+
+output                LCD_PCLK_p_o       ;
+
+wire                  LCD_PCLK_p_o       ;
+
+/****/
 
 assign LCD_PCLK_p_o       = rst_n_i ? clk_33MHz_i : 1'b0 ;
 
@@ -339,6 +362,8 @@ assign LCD_PCLK_p_o       = rst_n_i ? clk_33MHz_i : 1'b0 ;
 output                LCD_PWM_o          ;
 
 wire                  LCD_PWM_o          ;
+
+/****/
 
 assign LCD_PWM_o        = rst_n_i ? 1'b1    : 1'b0 ;
 
