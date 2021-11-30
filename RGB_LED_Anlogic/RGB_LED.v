@@ -221,10 +221,14 @@ assign LED_B_i = ( PWM_Counter [15:08] < B_PWM_Counter ) ? ( 1'b0 ) : ( 1'b1 ) ;
 
 always @ ( posedge clk_33MHz_i or negedge rst_n_i ) begin
 	if ( ! rst_n_i ) begin
-		H_Scanning_Counter <= 'b0 ;
+		LED_R <= 'b0 ;
+		LED_G <= 'b0 ;
+		LED_B <= 'b0 ;
 	end
 	else begin
-		H_Scanning_Counter <= H_Scanning_Counter_i ;
+		LED_R <= LED_R_i ;
+		LED_G <= LED_G_i ;
+		LED_B <= LED_B_i ;
 	end
 end
 
