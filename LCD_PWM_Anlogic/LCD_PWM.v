@@ -1,5 +1,5 @@
 
-module LCD (
+module LCD_PWM (
 	clk_24MHz_i        ,
 	rst_n_i            ,
 	LCD_R_o            ,
@@ -17,6 +17,8 @@ module LCD (
 /*    _p  : Posedge          */
 /*    _n  : Negedge          */
 
+parameter PWM_Step = 24 ; /* MAX 24000 */
+
 /****************************************************************/
 
 input                 clk_24MHz_i        ;
@@ -29,7 +31,7 @@ wire                  rst_n_i            ;
 
 wire                  pll_rst_p_i        ;
 
-assign pll_rst_p_i = ~ rst_n_i ;
+assign pll_rst_p_i = ~ rst_n_i           ;
 
 wire                  pll_clk0_o         ;
 
@@ -189,10 +191,10 @@ wire                  LCD_Data_Valid_i   ;
 /****/
 
 assign LCD_Data_Valid_i = ( (
-                            ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Total             - 1'b1 ) ) )
+                            ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Total                      - 1'b1 ) ) )
                             &
-                            ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Total             - 1'b1 ) ) )
-                            )                                                                                                                 ? (  1'b1           ) : (    1'b0           ) ) ;
+                            ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Total                      - 1'b1 ) ) )
+                            )                                                                                                                          ? (  1'b1           ) : (    1'b0           ) ) ;
 
 /****/
 
@@ -226,105 +228,105 @@ wire   [ bpp - 1:00 ] LCD_B_i            ;
 
 assign LCD_R_i          = ( (
                               (
-                    /* R**** */ ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 160 - 1'b1 ) ) )
+                    /* R**** */ ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 160          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 160  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 160  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 320          - 1'b1 ) ) )
                     /* *R*** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 320  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 480 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 320  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 480          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* **R** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480 - 1'b1 ) ) )
+                    /* **R** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***R* */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 480  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 640 - 1'b1 ) ) )
+                    /* ***R* */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 480  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 640          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 640  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 800 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 640  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 800          - 1'b1 ) ) )
                     /* ****R */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320          - 1'b1 ) ) )
                               )
-                            )                                                                                                                 ? (  8'b11111111    ) : (    8'b00000000    ) ) ;
+                            )                                                                                                                          ? (  8'b11111111    ) : (    8'b00000000    ) ) ;
 assign LCD_G_i          = ( (
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 160          - 1'b1 ) ) )
                     /* G**** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 160  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 160  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 320          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* *G*** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480 - 1'b1 ) ) )
+                    /* *G*** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* **G** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 320  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 480 - 1'b1 ) ) )
+                    /* **G** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 320  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 480          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 480  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 640 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 480  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 640          - 1'b1 ) ) )
                     /* ***G* */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 640  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 800 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 640  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 800          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ****G */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480 - 1'b1 ) ) )
+                    /* ****G */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480          - 1'b1 ) ) )
                               )
-                            )                                                                                                                 ? (  8'b11111111    ) : (    8'b00000000    ) ) ;
+                            )                                                                                                                          ? (  8'b11111111    ) : (    8'b00000000    ) ) ;
 assign LCD_B_i          = ( (
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total        ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 160          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* B**** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480 - 1'b1 ) ) )
+                    /* B**** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* *B*** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 160  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 320 - 1'b1 ) ) )
+                    /* *B*** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 160  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 320          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 320  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 480 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 320  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 480          - 1'b1 ) ) )
                     /* **B** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 160  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 320          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 480  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 640 - 1'b1 ) ) )
+                    /* ***** */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 480  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 640          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ***B* */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480 - 1'b1 ) ) )
+                    /* ***B* */ ( ( V_Scanning_Counter_o >= V_Blank_Total + 320  ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 480          - 1'b1 ) ) )
                               )
                               |
                               (
-                    /* ****B */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 640  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 800 - 1'b1 ) ) )
+                    /* ****B */ ( ( H_Scanning_Counter_o >= H_Blank_Total + 640  ) & ( H_Scanning_Counter_o <= ( H_Blank_Total + 800          - 1'b1 ) ) )
                     /* ***** */ &
-                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160 - 1'b1 ) ) )
+                    /* ***** */ ( ( V_Scanning_Counter_o >= V_Blank_Total        ) & ( V_Scanning_Counter_o <= ( V_Blank_Total + 160          - 1'b1 ) ) )
                               )
-                            )                                                                                                                 ? (  8'b11111111    ) : (    8'b00000000    ) ) ;
+                            )                                                                                                                          ? (  8'b11111111    ) : (    8'b00000000    ) ) ;
 
 /****/
 
 always @ ( posedge clk_33MHz_i or negedge rst_n_i ) begin
 	if ( ! rst_n_i ) begin
-		LCD_R <= 'b0 ;
-		LCD_G <= 'b0 ;
-		LCD_B <= 'b0 ;
+		LCD_R <= 'b0     ;
+		LCD_G <= 'b0     ;
+		LCD_B <= 'b0     ;
 	end
 	else begin
 		LCD_R <= LCD_R_i ;
@@ -355,7 +357,69 @@ wire                  LCD_PCLK_p_o       ;
 
 /****/
 
-assign LCD_PCLK_p_o = rst_n_i ? clk_33MHz_i : 1'b0 ;
+assign LCD_PCLK_p_o       = rst_n_i ? clk_33MHz_i : 1'b0 ;
+
+/****************************************************************/
+
+reg    [      15:00 ] PWM_scan           ;
+
+/****/
+
+always @ ( posedge clk_24MHz_i or negedge rst_n_i ) begin
+	if ( ! rst_n_i ) begin
+		PWM_scan  <= 'b0 ;
+	end
+	else begin
+		if ( PWM_scan == 24000 - 1 ) begin
+			PWM_scan <= 'b0 ;
+		end
+		else begin
+			PWM_scan <= PWM_scan + 1 ;
+		end
+	end
+end
+
+/****************************************************************/
+
+reg    [      01:00 ] PWM_state          ;
+reg    [      15:00 ] PWM_threshold      ;
+
+/****/
+
+always @ ( posedge clk_24MHz_i or negedge rst_n_i ) begin
+	if ( ! rst_n_i ) begin
+		PWM_state     <= 'b0 ;
+		PWM_threshold <= 'b0 ;
+	end
+	else begin
+		if ( PWM_scan == 24000 - 1 ) begin
+			if ( PWM_state == 1'b0 ) begin
+				if ( PWM_threshold >= 24000 ) begin
+					PWM_state     <= 1'b1                     ;
+					PWM_threshold <= PWM_threshold            ;
+				end
+				else begin
+					PWM_state     <= PWM_state                ;
+					PWM_threshold <= PWM_threshold + PWM_Step ;
+				end
+			end
+			else if ( PWM_state == 1'b1 ) begin
+				if ( PWM_threshold <= 0 ) begin
+					PWM_state     <= 1'b0                     ;
+					PWM_threshold <= PWM_threshold            ;
+				end
+				else begin
+					PWM_state     <= PWM_state                ;
+					PWM_threshold <= PWM_threshold - PWM_Step ;
+				end
+			end
+		end
+		else begin
+			PWM_state     <= PWM_state     ;
+			PWM_threshold <= PWM_threshold ;
+		end
+	end
+end
 
 /****************************************************************/
 
@@ -365,7 +429,7 @@ wire                  LCD_PWM_o          ;
 
 /****/
 
-assign LCD_PWM_o = rst_n_i ? 1'b1 : 1'b0 ;
+assign LCD_PWM_o = rst_n_i ? ( ( PWM_scan < PWM_threshold ) ? 1'b1 : 1'b0 ) : 1'b0 ;
 
 /****************************************************************/
 
