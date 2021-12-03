@@ -1,3 +1,4 @@
+
 module RGB_LED (
 	clk_24MHz_i ,
 	rst_n_i     ,
@@ -15,15 +16,15 @@ module RGB_LED (
 
 /****************************************************************/
 
-input          clk_24MHz_i   ;
-input          rst_n_i       ;
+input          clk_24MHz_i    ;
+input          rst_n_i        ;
 
-wire           clk_24MHz_i   ;
-wire           rst_n_i       ;
+wire           clk_24MHz_i    ;
+wire           rst_n_i        ;
 
 /****************************************************************/
 
-reg    [15:00] PWM_Counter   ;
+reg    [15:00] PWM_Counter    ;
 
 /****/
 
@@ -38,16 +39,16 @@ end
 
 /****/
 
-wire           PWM_clk_p_i   ;
+wire           PWM_clk_p_i    ;
 
 assign PWM_clk_p_i = ( PWM_Counter == 16'hFFFF ) ;
 
 /****************************************************************/
 
-reg    [02:00] RGB_State     ;
-reg    [07:00] R_PWM_Counter ;
-reg    [07:00] G_PWM_Counter ;
-reg    [07:00] B_PWM_Counter ;
+reg    [02:00] RGB_State      ;
+reg    [07:00] R_PWM_Counter  ;
+reg    [07:00] G_PWM_Counter  ;
+reg    [07:00] B_PWM_Counter  ;
 
 /****/
 
@@ -204,12 +205,12 @@ end
 
 /****************************************************************/
 
-reg            LED_R         ;
-reg            LED_G         ;
-reg            LED_B         ;
-wire           LED_R_i       ;
-wire           LED_G_i       ;
-wire           LED_B_i       ;
+reg            LED_R          ;
+reg            LED_G          ;
+reg            LED_B          ;
+wire           LED_R_i        ;
+wire           LED_G_i        ;
+wire           LED_B_i        ;
 
 /****/
 
@@ -221,9 +222,9 @@ assign LED_B_i = ( PWM_Counter [15:08] < B_PWM_Counter ) ? ( 1'b0 ) : ( 1'b1 ) ;
 
 always @ ( posedge clk_24MHz_i or negedge rst_n_i ) begin
 	if ( ! rst_n_i ) begin
-		LED_R <= 'b1 ;
-		LED_G <= 'b1 ;
-		LED_B <= 'b1 ;
+		LED_R <= 'b0 ;
+		LED_G <= 'b0 ;
+		LED_B <= 'b0 ;
 	end
 	else begin
 		LED_R <= LED_R_i ;
@@ -234,13 +235,13 @@ end
 
 /****/
 
-output         LED_R_n_o     ;
-output         LED_G_n_o     ;
-output         LED_B_n_o     ;
+output         LED_R_n_o      ;
+output         LED_G_n_o      ;
+output         LED_B_n_o      ;
 
-wire           LED_R_n_o     ;
-wire           LED_G_n_o     ;
-wire           LED_B_n_o     ;
+wire           LED_R_n_o      ;
+wire           LED_G_n_o      ;
+wire           LED_B_n_o      ;
 
 assign LED_R_n_o = LED_R ;
 assign LED_G_n_o = LED_G ;
