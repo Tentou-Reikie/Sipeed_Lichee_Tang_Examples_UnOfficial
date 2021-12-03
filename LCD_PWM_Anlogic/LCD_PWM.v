@@ -7,7 +7,7 @@ module LCD_PWM (
 	LCD_B_o            ,
 	LCD_Data_Valid_p_o ,
 	LCD_PCLK_p_o       ,
-	LCD_PWM_o         
+	LCD_PWM_o           
 ) ;
 
 /*    _i  : Input            */
@@ -17,23 +17,23 @@ module LCD_PWM (
 /*    _p  : Posedge          */
 /*    _n  : Negedge          */
 
-parameter PWM_Step = 24 ; /* MAX 24000 */
+parameter PWM_Step = 12 ; /* MAX 24000 */
 
 /****************************************************************/
 
-input                 clk_24MHz_i        ;
-input                 rst_n_i            ;
+input                 clk_24MHz_i                             ;
+input                 rst_n_i                                 ;
 
-wire                  clk_24MHz_i        ;
-wire                  rst_n_i            ;
+wire                  clk_24MHz_i                             ;
+wire                  rst_n_i                                 ;
 
 /****************************************************************/
 
-wire                  pll_rst_p_i        ;
+wire                  pll_rst_p_i                             ;
 
-assign pll_rst_p_i = ~ rst_n_i           ;
+assign pll_rst_p_i = ~ rst_n_i ;
 
-wire                  pll_clk0_o         ;
+wire                  pll_clk0_o                              ;
 
 EG_PHY_PLL clk_33MHz (
 	.refclk   ( clk_24MHz_i                                               ) ,
@@ -77,7 +77,7 @@ defparam clk_33MHz.CLKC0_DIV         = 27            ;
 defparam clk_33MHz.CLKC0_CPHASE      = 26            ;
 defparam clk_33MHz.CLKC0_FPHASE      = 0             ;
 
-wire                  clk_33MHz_i        ;
+wire                  clk_33MHz_i                             ;
 
 assign clk_33MHz_i = pll_clk0_o ;
 
@@ -132,9 +132,9 @@ localparam V_Border        =    0 ;
 
 /****************************************************************/
 
-reg    [ $clog2(H_Total) : 0 ] H_Scanning_Counter   ;
-wire   [ $clog2(H_Total) : 0 ] H_Scanning_Counter_i ;
-wire   [ $clog2(H_Total) : 0 ] H_Scanning_Counter_o ;
+reg    [ $clog2(H_Total) : 0 ] H_Scanning_Counter             ;
+wire   [ $clog2(H_Total) : 0 ] H_Scanning_Counter_i           ;
+wire   [ $clog2(H_Total) : 0 ] H_Scanning_Counter_o           ;
 
 /****/
 
@@ -155,9 +155,9 @@ assign H_Scanning_Counter_o = H_Scanning_Counter ;
 
 /****************************************************************/
 
-reg    [ $clog2(V_Total) : 0 ] V_Scanning_Counter   ;
-wire   [ $clog2(V_Total) : 0 ] V_Scanning_Counter_i ;
-wire   [ $clog2(V_Total) : 0 ] V_Scanning_Counter_o ;
+reg    [ $clog2(V_Total) : 0 ] V_Scanning_Counter             ;
+wire   [ $clog2(V_Total) : 0 ] V_Scanning_Counter_i           ;
+wire   [ $clog2(V_Total) : 0 ] V_Scanning_Counter_o           ;
 
 /****/
 
@@ -185,8 +185,8 @@ assign V_Scanning_Counter_o = V_Scanning_Counter ;
 
 /****************************************************************/
 
-reg                   LCD_Data_Valid     ;
-wire                  LCD_Data_Valid_i   ;
+reg                   LCD_Data_Valid                          ;
+wire                  LCD_Data_Valid_i                        ;
 
 /****/
 
@@ -209,20 +209,20 @@ end
 
 /****/
 
-output                LCD_Data_Valid_p_o ;
+output                LCD_Data_Valid_p_o                      ;
 
-wire                  LCD_Data_Valid_p_o ;
+wire                  LCD_Data_Valid_p_o                      ;
 
 assign LCD_Data_Valid_p_o = LCD_Data_Valid ;
 
 /****************************************************************/
 
-reg    [ bpp - 1:00 ] LCD_R              ;
-reg    [ bpp - 1:00 ] LCD_G              ;
-reg    [ bpp - 1:00 ] LCD_B              ;
-wire   [ bpp - 1:00 ] LCD_R_i            ;
-wire   [ bpp - 1:00 ] LCD_G_i            ;
-wire   [ bpp - 1:00 ] LCD_B_i            ;
+reg    [ bpp - 1:00 ] LCD_R                                   ;
+reg    [ bpp - 1:00 ] LCD_G                                   ;
+reg    [ bpp - 1:00 ] LCD_B                                   ;
+wire   [ bpp - 1:00 ] LCD_R_i                                 ;
+wire   [ bpp - 1:00 ] LCD_G_i                                 ;
+wire   [ bpp - 1:00 ] LCD_B_i                                 ;
 
 /****/
 
@@ -337,13 +337,13 @@ end
 
 /****/
 
-output [ bpp - 1:00 ] LCD_R_o            ;
-output [ bpp - 1:00 ] LCD_G_o            ;
-output [ bpp - 1:00 ] LCD_B_o            ;
+output [ bpp - 1:00 ] LCD_R_o                                 ;
+output [ bpp - 1:00 ] LCD_G_o                                 ;
+output [ bpp - 1:00 ] LCD_B_o                                 ;
 
-wire   [ bpp - 1:00 ] LCD_R_o            ;
-wire   [ bpp - 1:00 ] LCD_G_o            ;
-wire   [ bpp - 1:00 ] LCD_B_o            ;
+wire   [ bpp - 1:00 ] LCD_R_o                                 ;
+wire   [ bpp - 1:00 ] LCD_G_o                                 ;
+wire   [ bpp - 1:00 ] LCD_B_o                                 ;
 
 assign LCD_R_o = LCD_R ;
 assign LCD_G_o = LCD_G ;
@@ -351,17 +351,17 @@ assign LCD_B_o = LCD_B ;
 
 /****************************************************************/
 
-output                LCD_PCLK_p_o       ;
+output                LCD_PCLK_p_o                            ;
 
-wire                  LCD_PCLK_p_o       ;
+wire                  LCD_PCLK_p_o                            ;
 
 /****/
 
-assign LCD_PCLK_p_o       = rst_n_i ? clk_33MHz_i : 1'b0 ;
+assign LCD_PCLK_p_o = rst_n_i ? clk_33MHz_i : 1'b0 ;
 
 /****************************************************************/
 
-reg    [      15:00 ] PWM_scan           ;
+reg    [      15:00 ] PWM_scan                                ;
 
 /****/
 
@@ -381,8 +381,8 @@ end
 
 /****************************************************************/
 
-reg    [      01:00 ] PWM_state          ;
-reg    [      15:00 ] PWM_threshold      ;
+reg    [      01:00 ] PWM_state                               ;
+reg    [      15:00 ] PWM_threshold                           ;
 
 /****/
 
@@ -423,9 +423,9 @@ end
 
 /****************************************************************/
 
-output                LCD_PWM_o          ;
+output                LCD_PWM_o                               ;
 
-wire                  LCD_PWM_o          ;
+wire                  LCD_PWM_o                               ;
 
 /****/
 
